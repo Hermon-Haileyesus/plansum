@@ -1,17 +1,12 @@
-import { Text, View, StyleSheet } from "react-native";
+import Header from "@/components/Header";
+import { globalStyles } from "@/css/styles";
+import { ScrollView, Text } from "react-native";
 
-export default function Index() {
+export default function HomeScreen() {
   return (
-    <View style={styles.container}>
-      <Text>Edit src/app/index.tsx to edit this screen.</Text>
-    </View>
+    <ScrollView style={globalStyles.container}>
+      <Text style={globalStyles.title}>PlanSum</Text>
+      <Header />
+    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
