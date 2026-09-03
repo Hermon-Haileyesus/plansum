@@ -37,6 +37,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "614b90d8-210f-42bc-80ca-c207f00858c2"
+      }
+    },
+    "owner": "hermonhailes-team"
   }
 }
