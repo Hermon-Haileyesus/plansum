@@ -3,19 +3,19 @@ import PlanGrid from "@/components/PlansGrid";
 import RecentItems from "@/components/RecentPlans";
 import TotalMoneyInput from "@/components/TotalMoneyInput";
 import { colors, globalStyles } from "@/css/styles";
-import { getBudgetData, Plan } from "@/storage/planstorage";
+import { getBudgetData, Plan, setTotalMoney } from "@/storage/planstorage";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { ScrollView, Text, TouchableOpacity } from "react-native";
 export default function HomeScreen() {
-  const [totalMoney, setTotalMoney] = useState(0);
+  const [totalMoney, setTotalMoneystate] = useState(0);
   const [showBudgetInput, setShowBudgetInput] = useState(false);
   const [plans, setPlans] = useState<Plan[]>([]);
 
   const loadPlans = async () => {
     const data = await getBudgetData();
-    setTotalMoney(data.totalMoney);
+    setTotalMoneystate(data.totalMoney);
     setPlans(data.plans);
     console.log("Loaded plans:", data);
   };
@@ -27,7 +27,7 @@ export default function HomeScreen() {
   );
   const handleSaveTotalMoney = async (value: number) => {
     await setTotalMoney(value); // SAVE TO STORAGE
-    setTotalMoney(value);
+    setTotalMoneystate(value);
     setShowBudgetInput(false);
   };
   return (
@@ -57,12 +57,7 @@ export default function HomeScreen() {
 
       {/* Budget input (only visible when user clicks Set Budget) */}
       {showBudgetInput && <TotalMoneyInput onSave={handleSaveTotalMoney} />}
-      <PlanGrid
-        totalMoney={totalMoney}
-        totalExpenses={0}
-        saving={0}
-        totalItems={0}
-      />
+      <PlanGrid totalMoney={totalMoney} plans={plans} />
       <RecentItems plans={plans} />
     </ScrollView>
   );
