@@ -4,10 +4,10 @@ import PlanCard from "./PlanCard";
 export default function PlanGrid() {
   return (
     <View style={styles.grid}>
-      <PlanCard label="Total Money" value="0" color="#4ecdc4" />
-      <PlanCard label="Total Expenses" value="0" color="#ff6b6b" />
-      <PlanCard label="Saving" value="0" color="#6bcb77" />
-      <PlanCard label="Total Items" value="0" color="#ffd93d" />
+      <PlanCard label="Total Money" value="0" color="#3fa39d" />
+      <PlanCard label="Total Expenses" value="0" color="#c33a3a" />
+      <PlanCard label="Saving" value="0" color="#5a9b62" />
+      <PlanCard label="Total Items" value="0" color="#caa202" />
     </View>
   );
 }
