@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 type PlanCardProps = {
   label: string;
-  value: string;
+  value: number | string;
   color: string;
 };
 
