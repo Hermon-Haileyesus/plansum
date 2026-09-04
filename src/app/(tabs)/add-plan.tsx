@@ -1,14 +1,16 @@
 import { colors, globalStyles } from "@/css/styles";
+import { addItemToPlan, addPlan } from "@/storage/planstorage";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useState } from "react";
 import {
+  Alert,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-
 export default function AddItemScreen() {
   const [planName, setPlanName] = useState("");
   const [items, setItems] = useState([{ name: "", price: "" }]);
@@ -27,14 +29,28 @@ export default function AddItemScreen() {
     setItems(updated);
   };
 
-  const handleSavePlan = () => {
-    console.log({
-      plan: planName,
-      items: items.map((i) => ({
-        name: i.name,
-        price: Number(i.price),
-      })),
-    });
+  const handleSavePlan = async () => {
+    if (!planName.trim()) {
+      Alert.alert("Missing Plan Name", "Please add a plan name first.");
+      return;
+    }
+
+    const newPlan = await addPlan(planName);
+
+    // 2. Add each item to the plan
+    for (const item of items) {
+      if (item.name.trim() && item.price.trim()) {
+        await addItemToPlan(newPlan.id, item.name, Number(item.price));
+      }
+    }
+
+    // 3. Clear form
+    setPlanName("");
+    setItems([{ name: "", price: "" }]);
+
+    Alert.alert("Success", "Plan added successfully!");
+
+    router.push("/");
   };
 
   return (

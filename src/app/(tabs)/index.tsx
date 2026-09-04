@@ -3,14 +3,30 @@ import PlanGrid from "@/components/PlansGrid";
 import RecentItems from "@/components/RecentPlans";
 import TotalMoneyInput from "@/components/TotalMoneyInput";
 import { colors, globalStyles } from "@/css/styles";
+import { getBudgetData, Plan } from "@/storage/planstorage";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { ScrollView, Text, TouchableOpacity } from "react-native";
 export default function HomeScreen() {
   const [totalMoney, setTotalMoney] = useState(0);
   const [showBudgetInput, setShowBudgetInput] = useState(false);
+  const [plans, setPlans] = useState<Plan[]>([]);
 
-  const handleSaveTotalMoney = (value: number) => {
+  const loadPlans = async () => {
+    const data = await getBudgetData();
+    setTotalMoney(data.totalMoney);
+    setPlans(data.plans);
+    console.log("Loaded plans:", data);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      loadPlans();
+    }, []),
+  );
+  const handleSaveTotalMoney = async (value: number) => {
+    await setTotalMoney(value); // SAVE TO STORAGE
     setTotalMoney(value);
     setShowBudgetInput(false);
   };
@@ -47,7 +63,7 @@ export default function HomeScreen() {
         saving={0}
         totalItems={0}
       />
-      <RecentItems />
+      <RecentItems plans={plans} />
     </ScrollView>
   );
 }
