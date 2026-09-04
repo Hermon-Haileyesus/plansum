@@ -1,18 +1,17 @@
+import { Plan } from "@/storage/planstorage";
 import { StyleSheet, View } from "react-native";
 import PlanCard from "./PlanCard";
-type PlanGridProps = {
-  totalMoney: number;
-  totalExpenses: number;
-  saving: number;
-  totalItems: number;
-};
 
-export default function PlanGrid({
-  totalMoney,
-  totalExpenses,
-  saving,
-  totalItems,
-}: PlanGridProps) {
+type PlanGridProps = { totalMoney: number; plans: Plan[] };
+export default function PlanGrid({ totalMoney, plans }: PlanGridProps) {
+  // Calculate aggregated values from the plans
+  const totalExpenses = plans
+    .flatMap((plan) => plan.items)
+    .reduce((sum, item) => sum + item.price, 0);
+
+  const saving = totalMoney - totalExpenses;
+  const totalItems = plans.reduce((sum, plan) => sum + plan.items.length, 0);
+
   return (
     <View style={styles.grid}>
       <PlanCard
