@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import PlanGrid from "@/components/PlansGrid";
+import RecentItems from "@/components/RecentPlans";
 import { globalStyles } from "@/css/styles";
 import { ScrollView, Text } from "react-native";
 export default function HomeScreen() {
@@ -8,6 +9,7 @@ export default function HomeScreen() {
       <Text style={globalStyles.title}>PlanSum</Text>
       <Header />
       <PlanGrid />
+      <RecentItems />
     </ScrollView>
   );
 }
