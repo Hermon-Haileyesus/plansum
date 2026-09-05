@@ -85,13 +85,45 @@ export const addItemToPlan = async (
     price,
   };
 
-  const updatedPlans = data.plans.map((plan) =>
-    plan.id === planId ? { ...plan, items: [...plan.items, newItem] } : plan,
+  const updatedPlans = data.plans.map(
+    (plan) =>
+      plan.id === planId ? { ...plan, items: [newItem, ...plan.items] } : plan, // NEWEST FIRST
   );
 
   await saveBudgetData({ ...data, plans: updatedPlans });
 
   return newItem;
+};
+export const updatePlanName = async (planId: string, newName: string) => {
+  const data = await getBudgetData();
+
+  const updatedPlans = data.plans.map((plan) =>
+    plan.id === planId ? { ...plan, name: newName } : plan,
+  );
+
+  await saveBudgetData({ ...data, plans: updatedPlans });
+};
+
+export const updateItemInPlan = async (
+  planId: string,
+  itemId: string,
+  name: string,
+  price: number,
+) => {
+  const data = await getBudgetData();
+
+  const updatedPlans = data.plans.map((plan) =>
+    plan.id === planId
+      ? {
+          ...plan,
+          items: plan.items.map((item) =>
+            item.id === itemId ? { ...item, name, price } : item,
+          ),
+        }
+      : plan,
+  );
+
+  await saveBudgetData({ ...data, plans: updatedPlans });
 };
 
 // DELETE ITEM

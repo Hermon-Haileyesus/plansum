@@ -1,6 +1,7 @@
 import { globalStyles } from "@/css/styles";
 import { Plan } from "@/storage/planstorage";
-import { Text, View } from "react-native";
+import { router } from "expo-router";
+import { Text, TouchableOpacity, View } from "react-native";
 import PlanSummary from "./PlanItem";
 
 type Props = {
@@ -32,12 +33,21 @@ export default function RecentItems({ plans }: Props) {
         );
 
         return (
-          <PlanSummary
+          <TouchableOpacity
             key={plan.id}
-            name={plan.name}
-            totalExpense={totalExpense}
-            totalItems={plan.items.length}
-          />
+            onPress={() =>
+              router.push({
+                pathname: "/plan/[id]",
+                params: { id: plan.id },
+              })
+            }
+          >
+            <PlanSummary
+              name={plan.name}
+              totalExpense={totalExpense}
+              totalItems={plan.items.length}
+            />
+          </TouchableOpacity>
         );
       })}
     </View>
