@@ -1,3 +1,4 @@
+import CopyButton from "@/components/CopyButton";
 import Header from "@/components/Header";
 import PlanGrid from "@/components/PlansGrid";
 import RecentItems from "@/components/RecentPlans";
@@ -62,6 +63,7 @@ export default function HomeScreen() {
       {showBudgetInput && <TotalMoneyInput onSave={handleSaveTotalMoney} />}
       <ViewShot ref={viewShotRef} options={{ format: "png", quality: 0.9 }}>
         <PlanGrid totalMoney={totalMoney} plans={plans} />
+        <CopyButton totalmoney={totalMoney} plans={plans} />
         <RecentItems plans={plans} />
       </ViewShot>
     </ScrollView>
