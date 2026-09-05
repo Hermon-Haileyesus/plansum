@@ -10,6 +10,7 @@ import {
 } from "@/storage/planstorage";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import * as Notifications from "expo-notifications";
 import { router, useLocalSearchParams } from "expo-router";
 import * as Sharing from "expo-sharing";
 import { useEffect, useRef, useState } from "react";
@@ -111,6 +112,21 @@ export default function PlanDetailsScreen() {
         await addItemToPlan(String(id), item.name, Number(item.price));
       }
     }
+    // --- REMINDER LOGIC ---
+    const data = await getBudgetData();
+    const totalCost = items.reduce((acc, item) => acc + Number(item.price), 0);
+    const remaining = data.totalMoney - totalCost;
+
+    if (remaining <= 0) {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Low Budget Warning",
+          body: `Your remaining budget is only €${remaining}.`,
+        },
+        trigger: null,
+      });
+    }
+    // -----------------------
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     Alert.alert("Success", "Plan updated successfully!");
 

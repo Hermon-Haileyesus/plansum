@@ -1,7 +1,8 @@
 import { colors, globalStyles } from "@/css/styles";
-import { addItemToPlan, addPlan } from "@/storage/planstorage";
+import { addItemToPlan, addPlan, getBudgetData } from "@/storage/planstorage";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
@@ -29,7 +30,6 @@ export default function AddItemScreen() {
     updated[index][field] = value;
     setItems(updated);
   };
-
   const handleSavePlan = async () => {
     if (!planName.trim()) {
       Alert.alert("Missing Plan Name", "Please add a plan name first.");
@@ -38,16 +38,33 @@ export default function AddItemScreen() {
 
     const newPlan = await addPlan(planName);
 
-    // 2. Add each item to the plan
+    // Add items
     for (const item of items) {
       if (item.name.trim() && item.price.trim()) {
         await addItemToPlan(newPlan.id, item.name, Number(item.price));
       }
     }
 
-    // 3. Clear form
+    // --- REMINDER LOGIC ---
+    const data = await getBudgetData();
+    const totalCost = items.reduce((acc, item) => acc + Number(item.price), 0);
+    const remaining = data.totalMoney - totalCost;
+
+    if (remaining <= 0) {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Budget Empty",
+          body: "Your remaining budget is €0. You have used all your money.",
+        },
+        trigger: null,
+      });
+    }
+    // -----------------------
+
+    // Clear form
     setPlanName("");
     setItems([{ name: "", price: "" }]);
+
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     Alert.alert("Success", "Plan added successfully!");
 
