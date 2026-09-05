@@ -42,6 +42,12 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="plan/[id]"
+        options={{
+          href: null, // hide from tab bar
+        }}
+      />
     </Tabs>
   );
 }
