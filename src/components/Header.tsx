@@ -1,7 +1,12 @@
 import { colors, globalStyles } from "@/css/styles";
 import { StyleSheet, Text, View } from "react-native";
+import ShareImageButton from "./ShareButton";
 
-export default function Header() {
+export default function Header({
+  viewShotRef,
+}: {
+  viewShotRef: React.RefObject<any>;
+}) {
   const currentDate = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
@@ -11,6 +16,7 @@ export default function Header() {
   return (
     <View style={globalStyles.header}>
       <Text style={styles.date}>{currentDate}</Text>
+      <ShareImageButton viewShotRef={viewShotRef} />
     </View>
   );
 }

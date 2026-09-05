@@ -11,16 +11,19 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import * as Sharing from "expo-sharing";
+import { useEffect, useRef, useState } from "react";
 import {
   Alert,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import ViewShot from "react-native-view-shot";
 
 export default function PlanDetailsScreen() {
   const { id } = useLocalSearchParams();
@@ -29,6 +32,7 @@ export default function PlanDetailsScreen() {
   const [items, setItems] = useState<
     { id: string | null; name: string; price: string }[]
   >([]);
+  const viewShotRef = useRef<any>(null);
 
   const loadPlan = async () => {
     const data = await getBudgetData();
@@ -114,6 +118,30 @@ export default function PlanDetailsScreen() {
     loadPlan();
     router.push("/plans");
   };
+  const handleShareText = async () => {
+    const totalCost = items.reduce((acc, item) => acc + Number(item.price), 0);
+
+    const data = await getBudgetData();
+    const remaining = data.totalMoney - totalCost;
+
+    const itemList = items
+      .map((item) => `• ${item.name}: €${item.price}`)
+      .join("\n");
+
+    await Share.share({
+      message: `Plan Summary: ${planName}\n\nTotal Cost: €${totalCost}\nRemaining Budget: €${remaining}\n\nItems:\n${itemList}`,
+    });
+  };
+  const handleShareImage = async () => {
+    try {
+      if (!viewShotRef.current) return; // FIX
+
+      const uri = await viewShotRef.current.capture();
+      await Sharing.shareAsync(uri);
+    } catch (error) {
+      console.log("Error sharing image:", error);
+    }
+  };
 
   const handleDeletePlan = () => {
     Alert.alert("Delete Plan", "Are you sure you want to delete this plan?", [
@@ -141,83 +169,105 @@ export default function PlanDetailsScreen() {
 
   return (
     <ScrollView style={globalStyles.container}>
-      <Text style={globalStyles.title}>Edit Plan</Text>
-
-      {/* PLAN NAME */}
-      <TextInput
-        style={styles.input}
-        placeholder="Plan name"
-        placeholderTextColor={colors.textSecondary}
-        value={planName}
-        onChangeText={setPlanName}
-      />
-
-      {/* ITEMS */}
-      <View style={styles.itemsContainer}>
-        <ScrollView
-          style={{ maxHeight: 300 }}
-          nestedScrollEnabled={true}
-          showsVerticalScrollIndicator={true}
+      <ViewShot ref={viewShotRef} options={{ format: "png", quality: 0.9 }}>
+        <Text style={globalStyles.title}>Edit Plan</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            gap: 16,
+            marginTop: 10,
+          }}
         >
-          {items.map((item, index) => (
-            <View key={index} style={styles.itemRow}>
-              {/* ITEM NAME */}
-              <TextInput
-                style={[styles.input, styles.rowInput]}
-                placeholder="Item name"
-                placeholderTextColor={colors.textSecondary}
-                value={item.name}
-                onChangeText={(text) => handleChangeItem(index, "name", text)}
-              />
+          {/* Share as text */}
+          <TouchableOpacity onPress={handleShareText}>
+            <Ionicons name="share-outline" size={26} color={colors.primary} />
+          </TouchableOpacity>
 
-              {/* PRICE */}
-              <TextInput
-                style={[styles.input, styles.priceInput]}
-                placeholder="€"
-                placeholderTextColor={colors.textSecondary}
-                keyboardType="numeric"
-                value={item.price}
-                onChangeText={(text) => handleChangeItem(index, "price", text)}
-              />
-
-              {/* DELETE BUTTON */}
-              {item.id !== null && (
-                <TouchableOpacity
-                  onPress={() => handleDeleteItem(item.id!)}
-                  style={styles.deleteItemButton}
-                >
-                  <Ionicons name="trash-outline" size={22} color="white" />
-                </TouchableOpacity>
-              )}
-            </View>
-          ))}
-        </ScrollView>
-      </View>
-
-      {/* ADD MORE ITEM BUTTON */}
-      <TouchableOpacity style={styles.addMoreButton} onPress={handleAddMore}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-          <Ionicons
-            name="add-circle-outline"
-            size={22}
-            color={colors.textSecondary}
-          />
-          <Text style={styles.addMoreText}>Add More Item</Text>
+          {/* Share as image */}
+          <TouchableOpacity onPress={handleShareImage}>
+            <Ionicons name="image-outline" size={26} color={colors.primary} />
+          </TouchableOpacity>
         </View>
-      </TouchableOpacity>
 
-      {/* UPDATE BUTTON */}
-      <TouchableOpacity style={styles.saveButton} onPress={handleUpdatePlan}>
-        <Text style={styles.saveText}>Update Plan</Text>
-      </TouchableOpacity>
+        {/* PLAN NAME */}
+        <TextInput
+          style={styles.input}
+          placeholder="Plan name"
+          placeholderTextColor={colors.textSecondary}
+          value={planName}
+          onChangeText={setPlanName}
+        />
 
-      {/* DELETE PLAN BUTTON */}
-      <TouchableOpacity
-        style={styles.deletePlanButton}
-        onPress={handleDeletePlan}
-      >
-        <Text style={styles.deletePlanText}>Delete Plan</Text>
-      </TouchableOpacity>
+        {/* ITEMS */}
+        <View style={styles.itemsContainer}>
+          <ScrollView
+            style={{ maxHeight: 300 }}
+            nestedScrollEnabled={true}
+            showsVerticalScrollIndicator={true}
+          >
+            {items.map((item, index) => (
+              <View key={index} style={styles.itemRow}>
+                {/* ITEM NAME */}
+                <TextInput
+                  style={[styles.input, styles.rowInput]}
+                  placeholder="Item name"
+                  placeholderTextColor={colors.textSecondary}
+                  value={item.name}
+                  onChangeText={(text) => handleChangeItem(index, "name", text)}
+                />
+
+                {/* PRICE */}
+                <TextInput
+                  style={[styles.input, styles.priceInput]}
+                  placeholder="€"
+                  placeholderTextColor={colors.textSecondary}
+                  keyboardType="numeric"
+                  value={item.price}
+                  onChangeText={(text) =>
+                    handleChangeItem(index, "price", text)
+                  }
+                />
+
+                {/* DELETE BUTTON */}
+                {item.id !== null && (
+                  <TouchableOpacity
+                    onPress={() => handleDeleteItem(item.id!)}
+                    style={styles.deleteItemButton}
+                  >
+                    <Ionicons name="trash-outline" size={22} color="white" />
+                  </TouchableOpacity>
+                )}
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* ADD MORE ITEM BUTTON */}
+        <TouchableOpacity style={styles.addMoreButton} onPress={handleAddMore}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <Ionicons
+              name="add-circle-outline"
+              size={22}
+              color={colors.textSecondary}
+            />
+            <Text style={styles.addMoreText}>Add More Item</Text>
+          </View>
+        </TouchableOpacity>
+
+        {/* UPDATE BUTTON */}
+        <TouchableOpacity style={styles.saveButton} onPress={handleUpdatePlan}>
+          <Text style={styles.saveText}>Update Plan</Text>
+        </TouchableOpacity>
+
+        {/* DELETE PLAN BUTTON */}
+        <TouchableOpacity
+          style={styles.deletePlanButton}
+          onPress={handleDeletePlan}
+        >
+          <Text style={styles.deletePlanText}>Delete Plan</Text>
+        </TouchableOpacity>
+      </ViewShot>
     </ScrollView>
   );
 }
