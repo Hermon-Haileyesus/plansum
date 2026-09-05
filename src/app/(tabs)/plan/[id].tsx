@@ -9,6 +9,7 @@ import {
   updatePlanName,
 } from "@/storage/planstorage";
 import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -72,6 +73,7 @@ export default function PlanDetailsScreen() {
         style: "destructive",
         onPress: async () => {
           await deleteItemFromPlan(String(id), itemId);
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           loadPlan();
         },
       },
@@ -105,7 +107,7 @@ export default function PlanDetailsScreen() {
         await addItemToPlan(String(id), item.name, Number(item.price));
       }
     }
-
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     Alert.alert("Success", "Plan updated successfully!");
 
     // Reload fresh data from storage
@@ -121,6 +123,8 @@ export default function PlanDetailsScreen() {
         style: "destructive",
         onPress: async () => {
           await deletePlan(String(id));
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          Alert.alert("Success", "Plan deleted successfully!");
           router.push("/plans");
         },
       },

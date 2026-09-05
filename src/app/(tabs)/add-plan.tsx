@@ -1,6 +1,7 @@
 import { colors, globalStyles } from "@/css/styles";
 import { addItemToPlan, addPlan } from "@/storage/planstorage";
 import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
@@ -47,7 +48,7 @@ export default function AddItemScreen() {
     // 3. Clear form
     setPlanName("");
     setItems([{ name: "", price: "" }]);
-
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     Alert.alert("Success", "Plan added successfully!");
 
     router.push("/");
