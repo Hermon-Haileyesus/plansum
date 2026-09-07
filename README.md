@@ -1,56 +1,36 @@
-# Welcome to your Expo app 👋
+PlanSum 📘 — Smart Daily Planning App
+PlanSum is a cross‑platform productivity app built with Expo SDK 57, Expo Router, and EAS Build. It helps users create, track, and summarize daily plans with a clean UI and fast performance.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+🚀 Features
+📅 Create and manage daily plans
 
-## Get started
+📝 Summaries with reusable components (PlanSummary)
 
-1. Install dependencies
+🎨 Custom splash screen & adaptive icons
 
-   ```bash
-   npm install
-   ```
+📱 Android & iOS builds via EAS
 
-2. Start the app
+⚛️ Modern React features
 
-   ```bash
-   npx expo start
-   ```
+Expo Router (typed routes enabled)
 
-In the output, you'll find options to open the app in a
+React Compiler
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Automatic UI style switching
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+🌐 Static web export
 
-## Get a fresh project
+🔐 Production‑ready bundle identifiers
 
-When you're ready, run:
+Android: com.hermonhailesteam.plansum
 
-```bash
-npm run reset-project
-```
+iOS: com.hermonhailesteam.plansum
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-### Other setup steps
-
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+📦 Tech Stack
+Layer Tools
+Framework Expo SDK 57
+Navigation Expo Router (typed routes)
+Build System EAS Build
+UI React Native + Expo Components
+Assets Custom icons, splash screen
+Platforms Android, iOS, Web
