@@ -47,14 +47,24 @@ export default function AddItemScreen() {
 
     // --- REMINDER LOGIC ---
     const data = await getBudgetData();
-    const totalCost = items.reduce((acc, item) => acc + Number(item.price), 0);
-    const remaining = data.totalMoney - totalCost;
 
+    // Get ALL expenses from ALL plans
+    const allExpenses = data.plans.flatMap((plan) => plan.items);
+
+    // Total spent
+    const totalSpent = allExpenses.reduce(
+      (acc, item) => acc + Number(item.price),
+      0,
+    );
+
+    // Remaining money
+    const remaining = data.totalMoney - totalSpent;
+    console.log("Remaining money:", remaining);
     if (remaining <= 0) {
       await Notifications.scheduleNotificationAsync({
         content: {
-          title: "Budget Empty",
-          body: "Your remaining budget is €0. You have used all your money.",
+          title: "Budget Alert",
+          body: `You have exceeded your budget. Remaining: €${remaining}`,
         },
         trigger: null,
       });

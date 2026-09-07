@@ -114,14 +114,24 @@ export default function PlanDetailsScreen() {
     }
     // --- REMINDER LOGIC ---
     const data = await getBudgetData();
-    const totalCost = items.reduce((acc, item) => acc + Number(item.price), 0);
-    const remaining = data.totalMoney - totalCost;
+
+    // Get ALL expenses from ALL plans
+    const allExpenses = data.plans.flatMap((plan) => plan.items);
+
+    // Total spent
+    const totalSpent = allExpenses.reduce(
+      (acc, item) => acc + Number(item.price),
+      0,
+    );
+
+    // Remaining money
+    const remaining = data.totalMoney - totalSpent;
 
     if (remaining <= 0) {
       await Notifications.scheduleNotificationAsync({
         content: {
-          title: "Low Budget Warning",
-          body: `Your remaining budget is only €${remaining}.`,
+          title: "Budget Alert",
+          body: `You have exceeded your budget. Remaining: €${remaining}`,
         },
         trigger: null,
       });
